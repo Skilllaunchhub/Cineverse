@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover movies and TV shows on CineVerse. Explore genres, ratings, stories and trailers.">
+  <meta name="theme-color" content="#080d14">
+  <title>CineVerse | Discover. Explore. Enjoy.</title>
+
+  <style>
+    :root {
+      --background: #080d14;
+      --surface: #111a26;
+      --surface-light: #192536;
+      --accent: #35ddb0;
+      --text: #f5f7fa;
+      --muted: #a5b0bf;
+      --border: #263447;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(8, 13, 20, 0.97);
+      border-bottom: 1px solid var(--border);
+      padding: 17px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    .hero {
+      min-height: 430px;
+      padding: 80px 8%;
+      display: flex;
+      align-items: center;
+      background:
+        linear-gradient(90deg, #080d14 8%, rgba(8,13,20,.88) 48%, rgba(8,13,20,.35)),
+        url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1800&q=85")
+        center / cover no-repeat;
+    }
+
+    .hero-content {
+      max-width: 650px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      margin-bottom: 17px;
+    }
+
+    .hero h1 {
+      font-size: clamp(38px, 6vw, 66px);
+      line-height: 1.08;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      max-width: 520px;
+      color: #c2ccd8;
+      margin-bottom: 28px;
+    }
+
+    .primary-button {
+      display: inline-block;
+      border: 0;
+      border-radius: 6px;
+      padding: 12px 22px;
+      background: var(--accent);
+      color: #06140f;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .primary-button:hover {
+      opacity: 0.85;
+    }
+
+    main {
+      padding: 35px 7% 75px;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin: 30px 0 20px;
+    }
+
+    .section-heading h2 {
+      font-size: 24px;
+    }
+
+    .section-heading span {
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 22px 0 35px;
+    }
+
+    .toolbar input,
+    .toolbar select {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 13px;
+      outline: none;
+    }
+
+    .toolbar input {
+      flex: 1;
+      min-width: 210px;
+    }
+
+    .toolbar select {
+      min-width: 150px;
+    }
+
+    .toolbar input:focus,
+    .toolbar select:focus {
+      border-color: var(--accent);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+    }
+
+    .poster {
+      display: block;
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      background: var(--surface-light);
+    }
+
+    .card-info {
+      padding: 13px;
+    }
+
+    .card-info h3 {
+      font-size: 15px;
+      margin-bottom: 8px;
+      overflow-wrap: anywhere;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .rating {
+      color: #ffd36a;
+    }
+
+    .empty-message {
+      display: none;
+      color: var(--muted);
+      padding: 35px 0;
+    }
+
+    footer {
+      padding: 30px 7%;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      background: #0b111b;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer strong {
+      color: var(--accent);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(0, 0, 0, 0.82);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 570px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      position: relative;
+    }
+
+    .modal-box h2 {
+      font-size: 27px;
+      margin: 10px 0;
+    }
+
+    .modal-box p {
+      color: #c0cad7;
+      margin: 18px 0;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 17px;
+      border: 0;
+      background: none;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .secondary-button {
+      background: var(--surface-light);
+      color: white;
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 950px) {
+      .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 15px 5%;
+      }
+
+      .logo {
+        font-size: 21px;
+      }
+
+      nav {
+        gap: 12px;
+      }
+
+      nav a {
+        font-size: 12px;
+      }
+
+      .hero {
+        min-height: 350px;
+        padding: 60px 6%;
+      }
+
+      main {
+        padding: 25px 5% 50px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 13px;
+      }
+
+      .section-heading h2 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a href="#home" class="logo" style="text-decoration:none">
+      Cine<span>Verse</span>
+    </a>
+
+    <nav aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#movies">Movies</a>
+      <a href="#shows">TV Shows</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="eyebrow">YOUR WORLD OF ENTERTAINMENT</div>
+
+      <h1>Discover Your Next Favourite Story.</h1>
+
+      <p>
+        Explore movies, TV shows, exciting genres and entertainment.
+        Find something amazing to watch.
+      </p>
+
+      <a href="#movies" class="primary-button">Explore Movies</a>
+    </div>
+  </section>
+
+  <main>
+
+    <div class="section-heading">
+      <h2>Explore Entertainment</h2>
+      <span>DISCOVER SOMETHING NEW</span>
+    </div>
+
+    <div class="toolbar">
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="Search movies and TV shows..."
+        aria-label="Search titles"
+      >
+
+      <select id="typeFilter" aria-label="Filter by type">
+        <option value="all">All Titles</option>
+        <option value="movie">Movies</option>
+        <option value="show">TV Shows</option>
+      </select>
+
+      <select id="genreFilter" aria-label="Filter by genre">
+        <option value="all">All Genres</option>
+        <option value="Action">Action</option>
+        <option value="Adventure">Adventure</option>
+        <option value="Drama">Drama</option>
+        <option value="Science Fiction">Science Fiction</option>
+        <option value="Thriller">Thriller</option>
+        <option value="Fantasy">Fantasy</option>
+      </select>
+    </div>
+
+    <section id="movies">
+      <div class="section-heading">
+        <h2>Popular Movies</h2>
+        <span>MOVIES</span>
+      </div>
+      <div class="grid" id="movieGrid"></div>
+    </section>
+
+    <section id="shows">
+      <div class="section-heading">
+        <h2>Popular TV Shows</h2>
+        <span>TV SERIES</span>
+      </div>
+      <div class="grid" id="showGrid"></div>
+    </section>
+
+    <p class="empty-message" id="emptyMessage">
+      No titles found. Please try another search.
+    </p>
+
+  </main>
+
+  <div class="modal" id="detailsModal" role="dialog"
+       aria-modal="true" aria-labelledby="modalTitle">
+
+    <div class="modal-box">
+      <button class="close-button" id="closeModal"
+              aria-label="Close details">&times;</button>
+
+      <div class="eyebrow" id="modalType"></div>
+
+      <h2 id="modalTitle"></h2>
+
+      <div class="meta" id="modalMeta"></div>
+
+      <p id="modalDescription"></p>
+
+      <div class="modal-actions">
+        <a class="primary-button" id="trailerLink"
+           href="#" target="_blank" rel="noopener noreferrer">
+          Find Trailer
+        </a>
+
+        <button class="primary-button secondary-button" id="doneButton">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p><strong>CineVerse</strong> — Discover. Explore. Enjoy.</p>
+    <p style="margin-top:8px">
+      Your entertainment discovery destination.
+    </p>
+    <p style="margin-top:8px">
+      Movie and TV information in this demo is sample content.
+    </p>
+  </footer>
+
+  <script>
+    "use strict";
+
+    const fallbackPoster =
+      "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=500&q=85";
+
+    const titles = [
+      {
+        title: "Dune: Part Two",
+        type: "movie",
+        year: 2024,
+        rating: "8.5",
+        genre: "Science Fiction",
+        poster: "https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
+        description: "Paul Atreides joins Chani and the Fremen while seeking revenge against those who destroyed his family."
+      },
+      {
+        title: "Oppenheimer",
+        type: "movie",
+        year: 2023,
+        rating: "8.3",
+        genre: "Drama",
+        poster: "https://image.tmdb.org/t/p/w500/ptpr0kGAckfQkJeJIt8st5dglvd.jpg",
+        description: "The story of J. Robert Oppenheimer and his role in the development of the atomic bomb."
+      },
+      {
+        title: "Spider-Man: Across the Spider-Verse",
+        type: "movie",
+        year: 2023,
+        rating: "8.6",
+        genre: "Adventure",
+        poster: "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5XjkvvP.jpg",
+        description: "Miles Morales travels across the multiverse and meets a team of Spider-People."
+      },
+      {
+        title: "The Batman",
+        type: "movie",
+        year: 2022,
+        rating: "7.8",
+        genre: "Action",
+        poster: "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg",
+        description: "Batman investigates corruption in Gotham City while pursuing a mysterious criminal."
+      },
+      {
+        title: "Avatar: The Way of Water",
+        type: "movie",
+        year: 2022,
+        rating: "7.5",
+        genre: "Adventure",
+        poster: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+        description: "Jake Sully and Neytiri protect their family while exploring the oceans of Pandora."
+      },
+      {
+        title: "Interstellar",
+        type: "movie",
+        year: 2014,
+        rating: "8.7",
+        genre: "Science Fiction",
+        poster: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+        description: "A group of explorers travels beyond this galaxy to find a future for humanity."
+      },
+      {
+        title: "Inception",
+        type: "movie",
+        year: 2010,
+        rating: "8.8",
+        genre: "Action",
+        poster: "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
+        description: "A skilled thief enters people's dreams to steal secrets and attempt an impossible mission."
+      },
+      {
+        title: "Top Gun: Maverick",
+        type: "movie",
+        year: 2022,
+        rating: "8.2",
+        genre: "Action",
+        poster: "https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg",
+        description: "Maverick trains a new generation of pilots for a dangerous mission."
+      },
+      {
+        title: "Stranger Things",
+        type: "show",
+        year: 2016,
+        rating: "8.7",
+        genre: "Fantasy",
+        poster: "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfgn8JbDHj7qB.jpg",
+        description: "A group of friends encounters mysterious supernatural events in their small town."
+      },
+      {
+        title: "Wednesday",
+        type: "show",
+        year: 2022,
+        rating: "8.0",
+        genre: "Fantasy",
+        poster: "https://image.tmdb.org/t/p/w500/9PFonBhy4cQy7Jz20NpMygczOkv.jpg",
+        description: "Wednesday Addams investigates strange mysteries at Nevermore Academy."
+      },
+      {
+        title: "The Last of Us",
+        type: "show",
+        year: 2023,
+        rating: "8.5",
+        genre: "Drama",
+        poster: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=500&q=85",
+        description: "A survivor escorts a teenager across a dangerous post-apocalyptic world."
+      },
+      {
+        title: "Breaking Bad",
+        type: "show",
+        year: 2008,
+        rating: "9.5",
+        genre: "Drama",
+        poster: "https://image.tmdb.org/t/p/w500/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg",
+        description: "A chemistry teacher enters the criminal world after receiving a life-changing diagnosis."
+      }
+    ];
+
+    const searchInput = document.getElementById("searchInput");
+    const typeFilter = document.getElementById("typeFilter");
+    const genreFilter = document.getElementById("genreFilter");
+    const movieGrid = document.getElementById("movieGrid");
+    const showGrid = document.getElementById("showGrid");
+    const emptyMessage = document.getElementById("emptyMessage");
+    const modal = document.getElementById("detailsModal");
+
+    function createCard(item) {
+      const card = document.createElement("article");
+      card.className = "card";
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-label", "View " + item.title);
+
+      const poster = document.createElement("img");
+      poster.className = "poster";
+      poster.src = item.poster;
+      poster.alt = item.title + " poster";
+      poster.loading = "lazy";
+
+      poster.addEventListener("error", function () {
+        poster.onerror = null;
+        poster.src = fallbackPoster;
+      });
+
+      const info = document.createElement("div");
+      info.className = "card-info";
+
+      const heading = document.createElement("h3");
+      heading.textContent = item.title;
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+
+      const year = document.createElement("span");
+      year.textContent = item.year;
+
+      const rating = document.createElement("span");
+      rating.className = "rating";
+      rating.textContent = "? " + item.rating;
+
+      meta.append(year, rating);
+      info.append(heading, meta);
+      card.append(poster, info);
+
+      function openCard() {
+        showDetails(item);
+      }
+
+      card.addEventListener("click", openCard);
+
+      card.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openCard();
+        }
+      });
+
+      return card;
+    }
+
+    function renderTitles() {
+      const query = searchInput.value.trim().toLowerCase();
+      const selectedType = typeFilter.value;
+      const selectedGenre = genreFilter.value;
+
+      const filtered = titles.filter(function (item) {
+        const matchesSearch =
+          item.title.toLowerCase().includes(query);
+
+        const matchesType =
+          selectedType === "all" || item.type === selectedType;
+
+        const matchesGenre =
+          selectedGenre === "all" || item.genre === selectedGenre;
+
+        return matchesSearch && matchesType && matchesGenre;
+      });
+
+      movieGrid.replaceChildren();
+      showGrid.replaceChildren();
+
+      filtered.forEach(function (item) {
+        const card = createCard(item);
+
+        if (item.type === "movie") {
+          movieGrid.appendChild(card);
+        } else {
+          showGrid.appendChild(card);
+        }
+      });
+
+      document.getElementById("movies").style.display =
+        selectedType === "show" ? "none" : "block";
+
+      document.getElementById("shows").style.display =
+        selectedType === "movie" ? "none" : "block";
+
+      emptyMessage.style.display =
+        filtered.length === 0 ? "block" : "none";
+    }
+
+    function showDetails(item) {
+      document.getElementById("modalType").textContent =
+        item.type === "movie" ? "MOVIE" : "TV SHOW";
+
+      document.getElementById("modalTitle").textContent = item.title;
+
+      document.getElementById("modalMeta").textContent =
+        item.year + " | " + item.genre + " | Rating: " + item.rating;
+
+      document.getElementById("modalDescription").textContent =
+        item.description;
+
+      const trailerLink = document.getElementById("trailerLink");
+
+      trailerLink.href =
+        "https://www.youtube.com/results?search_query=" +
+        encodeURIComponent(item.title + " official trailer");
+
+      modal.style.display = "flex";
+      document.getElementById("closeModal").focus();
+    }
+
+    function closeDetails() {
+      modal.style.display = "none";
+    }
+
+    searchInput.addEventListener("input", renderTitles);
+    typeFilter.addEventListener("change", renderTitles);
+    genreFilter.addEventListener("change", renderTitles);
+
+    document.getElementById("closeModal")
+      .addEventListener("click", closeDetails);
+
+    document.getElementById("doneButton")
+      .addEventListener("click", closeDetails);
+
+    modal.addEventListener("click", function (event) {
+      if (event.target === modal) {
+        closeDetails();
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeDetails();
+      }
+    });
+
+    renderTitles();
+  </script>
+
+</body>
+</html>
